@@ -1,54 +1,109 @@
-﻿# Reveal All Map Locations — RSMM mod
+# Reveal All Map Locations — RSMM mod
 
+![Reveal All Map Locations showcase](assets/showcase.png)
 
-Purpose
--------
 Reveals Ravenswatch's normal revealable minimap POI markers each chapter by
-firing the game's own CROWS_MAP_REVEAL event.
+firing the game's own `CROWS_MAP_REVEAL` event.
 
-Target
-------
-Built against RSMM v5.8.0 / SDK 3.x on 2026-09-26.
+## Download
 
-Install
--------
-1. Install/launch Ravenswatch through RSMM.
-2. Put the entire "RevealAllMapLocations" folder in your Ravenswatch mods folder,
-   OR import/extract this zip using RSMM if your build supports zip import.
-3. Make sure the mod is enabled.
-4. Apply/launch through RSMM.
-5. Start a run. The reveal is attempted during chapter generation.
+Download the latest packaged mod ZIP from the GitHub release:
 
-What it reveals
----------------
+<https://github.com/Yanglerfish/RevealAllMapLocations/releases/tag/v0.1.0>
+
+Direct ZIP:
+
+<https://github.com/Yanglerfish/RevealAllMapLocations/releases/download/v0.1.0/RevealAllMapLocations_RSMM_v0.1.0.zip>
+
+## Install with Ravenswatch Mod Manager (RSMM)
+
+1. Install/open **Ravenswatch Mod Manager (RSMM)**.
+2. Download `RevealAllMapLocations_RSMM_v0.1.0.zip` from the release page.
+3. Import the ZIP in RSMM, or extract it so the mod folder layout is:
+
+   ```text
+   RevealAllMapLocations/
+     manifest.toml
+     init.lua
+     README.txt
+   ```
+
+4. Make sure **Reveal All Map Locations** is enabled in RSMM.
+5. Install the RSMM Lua loader. Lua mods require `winhttp.dll` beside
+   `Ravenswatch.exe`.
+   - Desktop app: use RSMM's setup/doctor/install-loader action.
+   - CLI:
+
+     ```powershell
+     rsmm install-loader
+     ```
+
+6. Apply enabled mods.
+   - Desktop app: click **Apply**.
+   - CLI:
+
+     ```powershell
+     rsmm apply
+     rsmm doctor
+     ```
+
+7. Launch Ravenswatch through RSMM or Steam and start a **solo/private** run.
+   The reveal is attempted during chapter generation.
+
+## Manual local install
+
+If you are installing manually, copy the complete `RevealAllMapLocations` folder
+into RSMM's actual `mods` directory. Do not create a double folder such as:
+
+```text
+RevealAllMapLocations/RevealAllMapLocations/manifest.toml
+```
+
+The final layout should be:
+
+```text
+<RSMM mods directory>/RevealAllMapLocations/manifest.toml
+<RSMM mods directory>/RevealAllMapLocations/init.lua
+<RSMM mods directory>/RevealAllMapLocations/README.txt
+```
+
+Then install the Lua loader and apply mods through RSMM.
+
+## What it reveals
+
 This targets the game's normal minimap POI marker reveal system. It is meant to
-show locations that Ravenswatch itself can mark through CROWS_MAP_REVEAL.
+show locations that Ravenswatch itself can mark through `CROWS_MAP_REVEAL`.
 
-It does NOT invent markers for objects that have no minimap-marker component,
+It does **not** invent markers for objects that have no minimap-marker component,
 and RSMM's own notes say terrain-fog clearing is engine-dependent. The goal is
 "show the POI locations", not necessarily "paint every pixel of fog away".
 
-Compatibility / caution
------------------------
-- Uses the public R.map.reveal() API first.
+## Compatibility / caution
+
+- Built against RSMM v5.8.0 / SDK 3.x on 2026-09-26.
+- Uses the public `R.map.reveal()` API first.
 - RSMM v5.8.0 has a world-dispatcher liveness-check quirk, so this mod includes
-  a compatibility fallback using R._internal and the same event construction
-  used by RSMM's own map.lua.
+  a compatibility fallback using `R._internal` and the same event construction
+  used by RSMM's own `map.lua`.
 - Because that fallback uses an internal API, a future RSMM update can break it.
-- Test solo first. I have not run Ravenswatch itself in this environment, so
-  this package is source-checked rather than in-game verified.
-- If it fails, inspect the RSMM mod log for lines beginning:
-    [RevealAllMapLocations]
+- Test solo/private first.
 
-Expected success log
---------------------
+## Troubleshooting
+
+If it fails, inspect the RSMM mod log for lines beginning:
+
+```text
+[RevealAllMapLocations]
+```
+
+Expected success log:
+
+```text
 [RevealAllMapLocations] revealed POI markers via R.map (...)
-or
+```
+
+or:
+
+```text
 [RevealAllMapLocations] revealed POI markers via v5.8 fallback (...)
-
-
-## Quick install
-
-Download dist/RevealAllMapLocations_RSMM_v0.1.0.zip, then import/extract it with Ravenswatch Mod Manager (RSMM), enable the mod, install the Lua loader, and apply mods.
-
-This repository root also contains the raw RSMM mod files (manifest.toml and init.lua) for inspection or manual local install.
+```
