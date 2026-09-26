@@ -1,4 +1,4 @@
--- v0.2.1: clients may never receive MAP_GENERATION_DONE.
+-- v0.2.2: clients may never receive MAP_GENERATION_DONE.
 local R = require "rsmm"
 local world, attempts, next_try, busy = nil, 0, 0, false
 local actions = {
@@ -40,5 +40,5 @@ R.on("*", function(ev, name)
     end
 end)
 R.on("ready", function()
-    R.log("[RevealAllMapLocations] v0.2.1 loaded; bounded delayed reveal; capture not required")
+    R.log("[RevealAllMapLocations] v0.2.2 loaded; bounded delayed reveal; capture not required")
 end)

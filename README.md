@@ -1,44 +1,32 @@
 # Reveal All Map Locations
 
-![Map preview](assets/showcase.png)
-
-A Ravenswatch mod designed to show points of interest on your map without having to walk up to each one. It reveals location icons; it does not guarantee removal of the dark fog covering unexplored terrain.
-
-## What you need
-
-Install [Ravenswatch Mod Manager (RSMM)](https://rsmm.me/) and use its loader setup to enable Lua mods. The loader is the component that lets Ravenswatch run this mod.
+A Ravenswatch mod that reveals location icons on the map. It does not guarantee removal of the dark fog over unexplored terrain.
 
 ## Installation
 
-1. Close Ravenswatch.
-2. Download **RevealAllMapLocations_RSMM_v0.2.1.zip** from the [release page](https://github.com/Yanglerfish/RevealAllMapLocations/releases/tag/v0.2.1).
-3. Open RSMM and import the ZIP.
-4. Enable **Reveal All Map Locations** and click **Apply**.
-5. Launch the game and start a new run.
+1. Install [Ravenswatch Mod Manager (RSMM)](https://rsmm.me/) and its Lua loader.
+2. Close Ravenswatch completely.
+3. Download **RevealAllMapLocations_RSMM_v0.2.2.zip** and extract it.
+4. Open PowerShell in the extracted **RevealAllMapLocations** folder and run `& .\Repair-Map-SDK.ps1`. It normally finds the Steam install automatically; otherwise enter your game folder. Wait for the installed or already-installed message. If access is denied, open PowerShell as administrator, return to that folder, and run the command again.
+5. Import the original ZIP into RSMM, enable **Reveal All Map Locations**, and click **Apply**. Replace the previous version rather than enabling two copies.
+6. Launch Ravenswatch and start a new run. There is no hotkey.
 
-If you are updating, replace the old version rather than keeping two copies enabled.
+The repair fixes an RSMM check that could incorrectly reject the map after earlier gameplay. It backs up the changed SDK file and leaves other SDK code intact. It supports only the verified game executable (SHA256 `40430b75c72be129f57917d865ecdc63a5ef4e4ba0a4244d950f5938cc00b2db`). It refuses other game builds or unfamiliar SDK layouts. If RSMM later replaces its SDK, rerunning the repair may be necessary.
 
-## How to use it
+## What changed in 0.2.2
 
-There is no hotkey. The mod attempts to reveal locations as the chapter loads. It then tries up to three more times while you play, with at least five seconds between attempts. Attack, use abilities, or interact with objects; standing idle does not trigger the retries.
+Includes the SDK repair for a world-versus-hero validation bug. Previously the same mod could work initially and stop revealing locations in later runs despite retrying. Reveal timing remains one initial attempt plus up to three retries during gameplay, at least five seconds apart.
 
-## Multiplayer and limitations
+## Tested and limitations
 
-The new retry behavior is experimental. It has passed automated checks, but complete map reveal has not yet been confirmed in-game for this version. In particular, it is not confirmed to work when you join another player's game. Try a solo or private run first.
+The installed correction was confirmed working in solo by a player. Offline regression checks cover the map check before and after the hero layout is learned, plus rejection of invalid or mismatched owners. The packaged repair applies that same correction. Non-host multiplayer remains unconfirmed.
 
-Only objects that have a map icon can be revealed. This mod does not add icons to every object in the world.
+Attack, use abilities, or interact with objects to trigger delayed attempts. Standing idle does not trigger them. Only objects with map icons can be revealed.
 
-## What's new in 0.2.1
+## Troubleshooting
 
-- Tries again during gameplay if the first reveal happens too early.
-- Limits retries so the mod does not keep running indefinitely.
-- Removes an older compatibility workaround and uses RSMM's built-in reveal function.
+Check that the repair succeeded, the mod is enabled, and Apply completed. Restart after updating. Messages beginning with `[RevealAllMapLocations]` appear in `mods/_log.txt` in the game folder. A dispatched message means the command was sent; it does not prove icons appeared.
 
-## If nothing appears
+To undo the SDK repair, close the game and restore `rsmm/lib/rsmm.lua` from its `.map-backup-...` file. Disable the mod and Apply to remove the mod itself.
 
-- Check that the mod is enabled, the Lua loader is installed, and you clicked **Apply**.
-- Restart the game after installing or updating.
-- Start a new run and play for a short time to give the retries a chance to run.
-- If it still fails, report your game and RSMM versions and whether you were playing solo, hosting, or joining someone else.
-
-For troubleshooting, the loader writes messages beginning with `[RevealAllMapLocations]` to `mods/_log.txt` in the game folder. A message saying an attempt was dispatched means it was sent to the game; it does not confirm the icons appeared.
+Source and releases: https://github.com/Yanglerfish/RevealAllMapLocations

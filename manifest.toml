@@ -1,9 +1,9 @@
 [mod]
 id = "RevealAllMapLocations"
 name = "Reveal All Map Locations"
-version = "0.2.1"
+version = "0.2.2"
 author = "ChatGPT + local user"
-description = "Reveals chapter POI markers through the guarded R.map API. No hero-capture requirement or raw-memory fallback."
+description = "Reveals map icons with bounded retries. Includes a build-specific SDK repair; read installation instructions."
 enabled = true
 sdk_version = ">=3.0,<4"
 multiplayer_scope = "local-only"
