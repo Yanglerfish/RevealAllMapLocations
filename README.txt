@@ -1,7 +1,5 @@
 # Reveal All Map Locations — RSMM mod
 
-![Reveal All Map Locations showcase](assets/showcase.png)
-
 Attempts to reveal Ravenswatch's normal minimap POI markers through the game's
 `CROWS_MAP_REVEAL` event using the guarded `R.map.reveal()` API.
 

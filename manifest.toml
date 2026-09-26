@@ -1,10 +1,11 @@
-#:schema https://docs.rsmm.me/manifest.schema.json
-
 [mod]
-id          = "RevealAllMapLocations"
-name        = "Reveal All Map Locations"
-version     = "0.1.0"
-author      = "ChatGPT + local user"
-description = "Reveals the chapter's normal minimap POI markers using Ravenswatch's CROWS_MAP_REVEAL event."
-enabled     = true
+id = "RevealAllMapLocations"
+name = "Reveal All Map Locations"
+version = "0.2.1"
+author = "ChatGPT + local user"
+description = "Reveals chapter POI markers through the guarded R.map API. No hero-capture requirement or raw-memory fallback."
+enabled = true
 sdk_version = ">=3.0,<4"
+multiplayer_scope = "local-only"
+tags = ["map", "utility"]
+license = "MIT"
