@@ -1,62 +1,44 @@
-# Reveal All Map Locations — RSMM mod
+# Reveal All Map Locations
 
-![Reveal All Map Locations showcase](assets/showcase.png)
+![Map preview](assets/showcase.png)
 
-Attempts to reveal Ravenswatch's normal minimap POI markers through the game's
-`CROWS_MAP_REVEAL` event using the guarded `R.map.reveal()` API.
+A Ravenswatch mod designed to show points of interest on your map without having to walk up to each one. It reveals location icons; it does not guarantee removal of the dark fog covering unexplored terrain.
 
-## Download and install
+## What you need
 
-Download [v0.2.1](https://github.com/Yanglerfish/RevealAllMapLocations/releases/tag/v0.2.1)
-and import `RevealAllMapLocations_RSMM_v0.2.1.zip` into Ravenswatch Mod Manager.
-Enable the mod, install the RSMM Lua loader if needed, and Apply.
-Close Ravenswatch before updating, then start a fresh run.
+Install [Ravenswatch Mod Manager (RSMM)](https://rsmm.me/) and use its loader setup to enable Lua mods. The loader is the component that lets Ravenswatch run this mod.
 
-Manual layout inside the RSMM mods directory:
+## Installation
 
-```text
-RevealAllMapLocations/
-  manifest.toml
-  init.lua
-  README.txt
-```
+1. Close Ravenswatch.
+2. Download **RevealAllMapLocations_RSMM_v0.2.1.zip** from the [release page](https://github.com/Yanglerfish/RevealAllMapLocations/releases/tag/v0.2.1).
+3. Open RSMM and import the ZIP.
+4. Enable **Reveal All Map Locations** and click **Apply**.
+5. Launch the game and start a new run.
 
-Requires RSMM SDK 3.x with `R.map.reveal()` and its Lua loader. This mod does not
-require Hero Capture or additional loader flags. No damage mod or custom SDK
-patches are included.
+If you are updating, replace the old version rather than keeping two copies enabled.
 
-## Changes in v0.2.1
+## How to use it
 
-- Captures the world dispatcher on `GENERATE_REWARDS` and attempts a reveal.
-- Adds up to three later attempts on ability exit, combo link, validated
-  interaction, or dream-shard gain events, at least five seconds apart.
-- Later attempts run even if the initial dispatch returned success. Dispatch
-  success alone does not establish that visible markers changed.
-- Clears the cached dispatcher and retry counter on run start/end, menu entry,
-  and chapter transition. A changed world dispatcher also resets the counter.
-- Does not depend on `MAP_GENERATION_DONE`, which was absent in an observed
-  non-host run. This version replaces the earlier map-complete/game-start
-  handlers with bounded gameplay-triggered retries.
-- Uses only the guarded SDK map API; the v0.1.0 internal/raw-memory fallback
-  has been removed. SDK refusal is logged without bypassing its checks.
+There is no hotkey. The mod attempts to reveal locations as the chapter loads. It then tries up to three more times while you play, with at least five seconds between attempts. Attack, use abilities, or interact with objects; standing idle does not trigger the retries.
 
-## Scope and validation
+## Multiplayer and limitations
 
-Targets existing POI marker components. Full terrain-fog clearing is not promised.
-RSMM lint and offline Lua 5.4 compilation/mocked retry and teardown checks passed.
-The new retry behavior has not yet been confirmed to reveal all POIs in-game,
-especially as a non-host. This release is a timing experiment, not a confirmed
-multiplayer fix. Test in a solo/private run first.
+The new retry behavior is experimental. It has passed automated checks, but complete map reveal has not yet been confirmed in-game for this version. In particular, it is not confirmed to work when you join another player's game. Try a solo or private run first.
 
-## Troubleshooting
+Only objects that have a map icon can be revealed. This mod does not add icons to every object in the world.
 
-Inspect `mods/_log.txt` for `[RevealAllMapLocations]` messages. Expected startup:
+## What's new in 0.2.1
 
-```text
-[RevealAllMapLocations] v0.2.1 loaded; bounded delayed reveal; capture not required
-```
+- Tries again during gameplay if the first reveal happens too early.
+- Limits retries so the mod does not keep running indefinitely.
+- Removes an older compatibility workaround and uses RSMM's built-in reveal function.
 
-Attempts log their number, reason, and `dispatched=true/false`. A true result
-means the SDK dispatched the event, not that every marker became visible.
-Retries need gameplay activity; waiting idle does not trigger them.
-If the SDK refuses a dispatcher, this mod does not force the operation.
+## If nothing appears
+
+- Check that the mod is enabled, the Lua loader is installed, and you clicked **Apply**.
+- Restart the game after installing or updating.
+- Start a new run and play for a short time to give the retries a chance to run.
+- If it still fails, report your game and RSMM versions and whether you were playing solo, hosting, or joining someone else.
+
+For troubleshooting, the loader writes messages beginning with `[RevealAllMapLocations]` to `mods/_log.txt` in the game folder. A message saying an attempt was dispatched means it was sent to the game; it does not confirm the icons appeared.
