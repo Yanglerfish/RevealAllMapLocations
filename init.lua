@@ -1,5 +1,30 @@
--- v0.2.2: clients may never receive MAP_GENERATION_DONE.
+-- v0.2.3: clients may never receive MAP_GENERATION_DONE.
 local R = require "rsmm"
+-- Keep the compatibility check inside this mod. Do not replace R.map or SDK files.
+local I = R._internal
+local function world_live(d)
+    if type(d) ~= "number" or d < 0x10000 or d % 8 ~= 0 then return false end
+    if not I or not I.va_trusted or I.va_trusted() ~= true then return false end
+    if not I.module_base or not I.read_u64 or not R.rtti or not R.rtti.name then return false end
+    local owner = d - 0x340
+    local base = I.module_base()
+    local vt = I.read_u64(owner)
+    if not base or base == 0 or not vt or vt < base or vt >= base + 0x1600000 then return false end
+    return R.rtti.name(owner) == "oCEntitySceneContext"
+end
+local ok_factory, factory = pcall(require, "rsmm.map")
+local map
+if ok_factory and type(factory) == "function" then
+    local ok, result = pcall(factory, {
+        R = R, I = I, give_hero = function() return nil end,
+        obj_has_vtable = world_live,
+    })
+    if ok and type(result) == "table" then map = result end
+end
+if not map then
+    R.log("[RevealAllMapLocations] BLOCKED: compatible RSMM map module missing")
+    return
+end
 local world, attempts, next_try, busy = nil, 0, 0, false
 local actions = {
     ["gameplay:ABILITY_EXIT"] = true,
@@ -9,14 +34,14 @@ local actions = {
 }
 local function reset()
     world, attempts, next_try, busy = nil, 0, 0, false
-    if R.map.rearm then R.map.rearm() end
+    if map.rearm then map.rearm() end
 end
 local function reveal(reason)
     if not world or busy or attempts >= 4 then return end
     attempts = attempts + 1
     next_try = os.time() + 5
     busy = true
-    local ok, result = pcall(R.map.reveal, world)
+    local ok, result = pcall(map.reveal, world)
     busy = false
     R.log("[RevealAllMapLocations] attempt=" .. attempts .. " reason=" .. reason
         .. " dispatched=" .. tostring(ok and result == true)
@@ -40,5 +65,5 @@ R.on("*", function(ev, name)
     end
 end)
 R.on("ready", function()
-    R.log("[RevealAllMapLocations] v0.2.2 loaded; bounded delayed reveal; capture not required")
+    R.log("[RevealAllMapLocations] v0.2.3 loaded; self-contained world-owner check; no SDK repair needed")
 end)
